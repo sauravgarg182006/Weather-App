@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About WeatherSphere — Architecture & System Details</title>
+  <meta name="description" content="Discover WeatherSphere's architectural design, REST API integration, technology stack, and meteorological calculation engines.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌦️</text></svg>">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="nav-brand" aria-label="WeatherSphere Home">
+        <span class="brand-icon">🌦️</span>
+        <span class="brand-text">Weather<span>Sphere</span></span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="forecast.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
+          <li><a href="cities.html" class="nav-link"><i class="fa-solid fa-city"></i> Cities</a></li>
+          <li><a href="favorites.html" class="nav-link"><i class="fa-solid fa-star"></i> Favorites</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="about.html" class="nav-link active"><i class="fa-solid fa-circle-info"></i> About</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="control-pill" title="Toggle Temperature Unit">
+          <button class="pill-btn unit-btn active" data-unit="C">°C</button>
+          <button class="pill-btn unit-btn" data-unit="F">°F</button>
+        </div>
+
+        <button class="btn-icon-toggle theme-toggle-btn" aria-label="Toggle Theme">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <div id="navbar-auth-section">
+          <a href="login.html" class="btn-auth"><i class="fa-solid fa-user"></i> <span>Sign In</span></a>
+        </div>
+
+        <button class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 3rem; padding-bottom: 5rem; max-width: 980px;">
+    <!-- Header -->
+    <div style="text-align: center; margin-bottom: 3.5rem;">
+      <div class="hero-badge">
+        <i class="fa-solid fa-layer-group"></i> Architecture & Engineering
+      </div>
+      <h1 style="font-family: 'Outfit', sans-serif; font-size: 3rem; font-weight: 800; margin-bottom: 1rem;">
+        About WeatherSphere
+      </h1>
+      <p style="font-size: 1.2rem; color: var(--text-secondary); max-width: 650px; margin: 0 auto;">
+        "Weather, wherever you are." A professional, high-performance full-stack meteorological platform built with Vanilla web standards and robust Node.js REST services.
+      </p>
+    </div>
+
+    <!-- Overview Card -->
+    <div class="weather-hero-card" style="margin-bottom: 2.5rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-primary);">
+        <i class="fa-solid fa-circle-nodes" style="color: var(--accent-primary);"></i> Project Overview
+      </h2>
+      <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7; margin-bottom: 1rem;">
+        WeatherSphere delivers hyper-local atmospheric forecasts, real-time observational metrics, and 7-day extended projections across every city worldwide. Built with strict adherence to architectural decoupling, zero frontend framework bloat, and enterprise security practices.
+      </p>
+      <p style="color: var(--text-secondary); font-size: 1.05rem; line-height: 1.7;">
+        The system employs a multi-tiered architecture that keeps all API keys strictly enclosed inside the Express backend proxy layer, completely preventing credential exposure to client browsers.
+      </p>
+    </div>
+
+    <!-- System Architecture Section -->
+    <div id="architecture" class="weather-hero-card" style="margin-bottom: 2.5rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-primary);">
+        <i class="fa-solid fa-network-wired" style="color: var(--accent-primary);"></i> Secure Decoupled Architecture
+      </h2>
+
+      <div style="background: var(--bg-card-alt); border: 1px solid var(--border-medium); border-radius: var(--radius-md); padding: 1.5rem; font-family: monospace; font-size: 0.95rem; color: var(--accent-primary); line-height: 1.8; overflow-x: auto;">
+        Browser Client (HTML5 / Vanilla JS / CSS3)<br>
+        &nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;▼ (JSON Fetch Requests with JWT Bearer Token)<br>
+        Express.js REST API Gateway (Port 5000)<br>
+        &nbsp;&nbsp;├── Authentication Middleware (JWT Validation & bcryptjs)<br>
+        &nbsp;&nbsp;├── Weather & Geocoding Services (Key Protection Proxy)<br>
+        &nbsp;&nbsp;└── Data Access Layer (Mongoose & MongoDB Models)<br>
+        &nbsp;&nbsp;│<br>
+        &nbsp;&nbsp;▼ (Encrypted HTTPS External Calls)<br>
+        OpenWeather API & Global Weather Satellites
+      </div>
+    </div>
+
+    <!-- Tech Stack Grid -->
+    <div style="margin-bottom: 3rem;">
+      <h2 class="metrics-section-title">
+        <i class="fa-solid fa-code" style="color: var(--accent-primary);"></i> Technology Stack
+      </h2>
+      <div class="metrics-grid" style="grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));">
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Frontend</span><i class="fa-brands fa-html5 metric-icon"></i></div>
+          <div class="metric-value" style="font-size: 1.25rem;">HTML5 & Vanilla JS</div>
+          <div class="metric-sub">Pure ES6+ modules, Fetch API, no framework overhead.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Styling</span><i class="fa-brands fa-css3-alt metric-icon"></i></div>
+          <div class="metric-value" style="font-size: 1.25rem;">Modern CSS3</div>
+          <div class="metric-sub">Design tokens, CSS variables, glassmorphism, responsive grids.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Backend</span><i class="fa-brands fa-node-js metric-icon"></i></div>
+          <div class="metric-value" style="font-size: 1.25rem;">Node & Express</div>
+          <div class="metric-sub">REST endpoints, controllers, services, error middleware.</div>
+        </div>
+
+        <div class="metric-card">
+          <div class="metric-header"><span class="metric-label">Database</span><i class="fa-solid fa-database metric-icon"></i></div>
+          <div class="metric-value" style="font-size: 1.25rem;">MongoDB & Mongoose</div>
+          <div class="metric-sub">User accounts, favorite cities, search history schemas.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- REST API Endpoints Table -->
+    <div id="api" class="weather-hero-card" style="margin-bottom: 2.5rem;">
+      <h2 style="font-size: 1.5rem; font-weight: 700; margin-bottom: 1.25rem; color: var(--text-primary);">
+        <i class="fa-solid fa-plug" style="color: var(--accent-primary);"></i> REST API Endpoints
+      </h2>
+      
+      <div style="overflow-x: auto;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.92rem;">
+          <thead>
+            <tr style="border-bottom: 1px solid var(--border-medium); color: var(--text-secondary);">
+              <th style="padding: 0.75rem 0.5rem;">Method</th>
+              <th style="padding: 0.75rem 0.5rem;">Endpoint</th>
+              <th style="padding: 0.75rem 0.5rem;">Auth</th>
+              <th style="padding: 0.75rem 0.5rem;">Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--color-success);">GET</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/health</code></td>
+              <td style="padding: 0.75rem 0.5rem;">Public</td>
+              <td style="padding: 0.75rem 0.5rem;">System health and API status</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--color-success);">GET</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/weather?city=Jaipur</code></td>
+              <td style="padding: 0.75rem 0.5rem;">Public</td>
+              <td style="padding: 0.75rem 0.5rem;">Normalized current weather by city name</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--color-success);">GET</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/weather/coordinates?lat=...&lon=...</code></td>
+              <td style="padding: 0.75rem 0.5rem;">Public</td>
+              <td style="padding: 0.75rem 0.5rem;">Normalized weather by latitude and longitude</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--color-success);">GET</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/forecast?city=Jaipur</code></td>
+              <td style="padding: 0.75rem 0.5rem;">Public</td>
+              <td style="padding: 0.75rem 0.5rem;">24-hour hourly and 7-day daily forecast</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--accent-warm);">POST</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/auth/register</code></td>
+              <td style="padding: 0.75rem 0.5rem;">Public</td>
+              <td style="padding: 0.75rem 0.5rem;">User registration with bcrypt hashing</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--accent-warm);">POST</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/auth/login</code></td>
+              <td style="padding: 0.75rem 0.5rem;">Public</td>
+              <td style="padding: 0.75rem 0.5rem;">User login returning JSON Web Token</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--color-success);">GET</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/favorites</code></td>
+              <td style="padding: 0.75rem 0.5rem;">JWT</td>
+              <td style="padding: 0.75rem 0.5rem;">Get user's favorite cities</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-subtle);">
+              <td style="padding: 0.75rem 0.5rem;"><code style="color: var(--color-error);">DELETE</code></td>
+              <td style="padding: 0.75rem 0.5rem;"><code>/api/history</code></td>
+              <td style="padding: 0.75rem 0.5rem;">JWT</td>
+              <td style="padding: 0.75rem 0.5rem;">Clear all user search history</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Developer & Privacy & Contact -->
+    <div class="dashboard-grid">
+      <div class="weather-hero-card">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary);">
+          <i class="fa-solid fa-user-shield" style="color: var(--accent-primary);"></i> Privacy Guarantee
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+          Your geographic coordinates are utilized strictly on-demand for weather retrieval. Coordinate data is never sold or shared with external tracking ad-networks. Passwords are irreversibly hashed with salted bcrypt rounds.
+        </p>
+      </div>
+
+      <div class="weather-hero-card">
+        <h3 style="font-size: 1.25rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary);">
+          <i class="fa-solid fa-paper-plane" style="color: var(--accent-primary);"></i> Contact & Support
+        </h3>
+        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+          For meteorological queries, API integrations, or bug disclosures, reach out to the WeatherSphere engineering group at <strong style="color: var(--accent-primary);">support@weathersphere.internal</strong>.
+        </p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="brand-icon">🌦️</span>
+            <span class="brand-text">Weather<span>Sphere</span></span>
+          </div>
+          <p class="footer-tagline">"Weather, wherever you are." Real-time weather intelligence and hyper-local atmospheric forecasts.</p>
+          <div class="footer-provider-badge">
+            <i class="fa-solid fa-shield-halved" style="color: var(--accent-primary);"></i> Powered by OpenWeather API
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="forecast.html">Forecast</a></li>
+            <li><a href="cities.html">Cities</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>User Area</h4>
+          <ul class="footer-links">
+            <li><a href="favorites.html">Favorites</a></li>
+            <li><a href="history.html">Search History</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Information</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="about.html#architecture">Architecture</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 WeatherSphere. All rights reserved.</span>
+        <span>Verified REST Engine • Clean Vanilla Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/app.js"></script>
+</body>
+</html>

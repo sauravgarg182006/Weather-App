@@ -1,0 +1,18 @@
+{
+  "name": "weathersphere",
+  "version": "1.0.0",
+  "description": "WeatherSphere - Weather, wherever you are. Professional full-stack weather web application.",
+  "scripts": {
+    "start": "node backend/server.js",
+    "backend": "node backend/server.js",
+    "frontend": "node frontend-server.js",
+    "dev": "node backend/server.js"
+  },
+  "keywords": [
+    "weather",
+    "forecast",
+    "weathersphere"
+  ],
+  "author": "WeatherSphere Team",
+  "license": "ISC"
+}

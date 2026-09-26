@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>City Explorer & Global Weather — WeatherSphere</title>
+  <meta name="description" content="Search any city or metropolitan area globally to preview instant live temperatures, weather conditions, and direct forecasts.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌦️</text></svg>">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="nav-brand" aria-label="WeatherSphere Home">
+        <span class="brand-icon">🌦️</span>
+        <span class="brand-text">Weather<span>Sphere</span></span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="forecast.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
+          <li><a href="cities.html" class="nav-link active"><i class="fa-solid fa-city"></i> Cities</a></li>
+          <li><a href="favorites.html" class="nav-link"><i class="fa-solid fa-star"></i> Favorites</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="control-pill" title="Toggle Temperature Unit">
+          <button class="pill-btn unit-btn active" data-unit="C">°C</button>
+          <button class="pill-btn unit-btn" data-unit="F">°F</button>
+        </div>
+
+        <button class="btn-icon-toggle theme-toggle-btn" aria-label="Toggle Theme">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <div id="navbar-auth-section">
+          <a href="login.html" class="btn-auth"><i class="fa-solid fa-user"></i> <span>Sign In</span></a>
+        </div>
+
+        <button class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <!-- Cities Search Header -->
+    <div style="text-align: center; max-width: 680px; margin: 0 auto 2.5rem;">
+      <h1 style="font-family: 'Outfit', sans-serif; font-size: 2.5rem; font-weight: 800; margin-bottom: 0.75rem;">
+        Global City Explorer
+      </h1>
+      <p style="color: var(--text-secondary); font-size: 1.05rem;">
+        Search any city worldwide to inspect live meteorological metrics, local temperature, and conditions.
+      </p>
+
+      <form id="cities-search-form" class="search-box" style="margin-top: 1.5rem;">
+        <i class="fa-solid fa-magnifying-glass search-icon"></i>
+        <input 
+          type="text" 
+          id="city-search-input" 
+          class="search-input" 
+          placeholder="Enter city name (e.g. Mumbai, Berlin, Singapore, Cairo)..." 
+          required 
+          autocomplete="off"
+        />
+        <button type="submit" class="btn-search">
+          <i class="fa-solid fa-magnifying-glass"></i> Search
+        </button>
+      </form>
+    </div>
+
+    <!-- Results Section -->
+    <section>
+      <div style="display: flex; align-items: center; justify-content: space-between;">
+        <h2 class="metrics-section-title" id="results-title">
+          <i class="fa-solid fa-earth-americas" style="color: var(--accent-primary);"></i> Featured Global Cities
+        </h2>
+        <span id="results-count" style="font-size: 0.88rem; color: var(--text-muted); font-weight: 500;"></span>
+      </div>
+
+      <div id="cities-grid" class="cities-grid">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="brand-icon">🌦️</span>
+            <span class="brand-text">Weather<span>Sphere</span></span>
+          </div>
+          <p class="footer-tagline">"Weather, wherever you are." Real-time weather intelligence and hyper-local atmospheric forecasts.</p>
+          <div class="footer-provider-badge">
+            <i class="fa-solid fa-shield-halved" style="color: var(--accent-primary);"></i> Powered by OpenWeather API
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="forecast.html">Forecast</a></li>
+            <li><a href="cities.html">Cities</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>User Area</h4>
+          <ul class="footer-links">
+            <li><a href="favorites.html">Favorites</a></li>
+            <li><a href="history.html">Search History</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Information</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="about.html#architecture">Architecture</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 WeatherSphere. All rights reserved.</span>
+        <span>Verified REST Engine • Clean Vanilla Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/app.js"></script>
+  <script type="module">
+    import { getCurrentWeatherByCity, searchCities } from '../js/api.js';
+    import { themeManager } from '../js/theme.js';
+    import { createCityCard, showLoading, showError, showToast } from '../js/components.js';
+
+    const defaultCities = ['Mumbai', 'Delhi', 'Bengaluru', 'London', 'New York', 'Tokyo'];
+    let currentResults = [];
+
+    const form = document.getElementById('cities-search-form');
+    const input = document.getElementById('city-search-input');
+    const grid = document.getElementById('cities-grid');
+    const title = document.getElementById('results-title');
+    const count = document.getElementById('results-count');
+
+    function renderCards() {
+      if (!grid) return;
+      grid.innerHTML = '';
+      const unit = themeManager.getUnit();
+
+      currentResults.forEach(cityData => {
+        const card = createCityCard(cityData, unit, (cityName) => {
+          window.location.href = `../index.html?city=${encodeURIComponent(cityName)}`;
+        });
+        grid.appendChild(card);
+      });
+    }
+
+    async function loadInitialCities() {
+      showLoading(grid, 'Loading featured global cities...');
+      try {
+        const promises = defaultCities.map(city => getCurrentWeatherByCity(city).catch(() => null));
+        const responses = await Promise.all(promises);
+        currentResults = responses.filter(r => r && r.success).map(r => r.data);
+        renderCards();
+      } catch (err) {
+        showError(grid, 'Unable to load featured cities.', () => loadInitialCities());
+      }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const q = input.value.trim();
+      if (!q) return;
+
+      showLoading(grid, `Searching weather for "${q}"...`);
+      title.innerHTML = `<i class="fa-solid fa-magnifying-glass" style="color: var(--accent-primary);"></i> Search Results for "${q}"`;
+
+      try {
+        const res = await getCurrentWeatherByCity(q);
+        if (res.success && res.data) {
+          currentResults = [res.data];
+          count.textContent = '1 city found';
+          renderCards();
+        } else {
+          throw new Error('City not found');
+        }
+      } catch (err) {
+        currentResults = [];
+        count.textContent = '0 cities found';
+        showError(grid, `Could not find weather for "${q}". Please check the spelling.`, () => loadInitialCities());
+      }
+    });
+
+    window.addEventListener('weathersphere:unitChanged', () => {
+      renderCards();
+    });
+
+    loadInitialCities();
+  </script>
+</body>
+</html>

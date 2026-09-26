@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extended Weather Forecast — WeatherSphere</title>
+  <meta name="description" content="View 24-hour detailed hourly updates and accurate 7-day extended forecasts with precipitation probabilities, winds, and temperature ranges.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌦️</text></svg>">
+  
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <link rel="stylesheet" href="../css/themes.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <a href="../index.html" class="nav-brand" aria-label="WeatherSphere Home">
+        <span class="brand-icon">🌦️</span>
+        <span class="brand-text">Weather<span>Sphere</span></span>
+      </a>
+
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links">
+          <li><a href="../index.html" class="nav-link"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="forecast.html" class="nav-link active"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
+          <li><a href="cities.html" class="nav-link"><i class="fa-solid fa-city"></i> Cities</a></li>
+          <li><a href="favorites.html" class="nav-link"><i class="fa-solid fa-star"></i> Favorites</a></li>
+          <li><a href="history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+        </ul>
+      </nav>
+
+      <div class="nav-actions">
+        <div class="control-pill" title="Toggle Temperature Unit">
+          <button class="pill-btn unit-btn active" data-unit="C">°C</button>
+          <button class="pill-btn unit-btn" data-unit="F">°F</button>
+        </div>
+
+        <button class="btn-icon-toggle theme-toggle-btn" aria-label="Toggle Theme">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <div id="navbar-auth-section">
+          <a href="login.html" class="btn-auth"><i class="fa-solid fa-user"></i> <span>Sign In</span></a>
+        </div>
+
+        <button class="hamburger-btn" aria-label="Toggle navigation menu">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container" style="padding-top: 2.5rem; padding-bottom: 4rem;">
+    <!-- Forecast Header & City Search -->
+    <div style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 1.5rem; margin-bottom: 2rem;">
+      <div>
+        <h1 id="forecast-city-title" style="font-family: 'Outfit', sans-serif; font-size: 2.25rem; font-weight: 800; display: flex; align-items: center; gap: 0.6rem;">
+          <i class="fa-solid fa-chart-line" style="color: var(--accent-primary);"></i> Extended Weather Forecast
+        </h1>
+        <p style="color: var(--text-secondary); margin-top: 0.25rem;">Real-time hourly sequence and comprehensive 7-day atmospheric projections.</p>
+      </div>
+
+      <!-- Quick Search Bar -->
+      <form id="forecast-search-form" style="display: flex; gap: 0.5rem; max-width: 360px; width: 100%;">
+        <div class="search-box" style="padding: 0.25rem 0.5rem 0.25rem 1rem; width: 100%;">
+          <input type="text" id="forecast-search-input" class="search-input" placeholder="Change city..." style="font-size: 0.95rem;" required>
+          <button type="submit" class="btn-search" style="padding: 0.5rem 1rem; font-size: 0.88rem;">
+            <i class="fa-solid fa-magnifying-glass"></i>
+          </button>
+          <button type="button" id="btn-forecast-location" class="btn-location" style="padding: 0.5rem 0.75rem;" title="Current Location">
+            <i class="fa-solid fa-location-crosshairs"></i>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <!-- Section 1: Hourly Forecast -->
+    <section style="margin-bottom: 3rem;">
+      <h2 class="metrics-section-title">
+        <i class="fa-solid fa-clock" style="color: var(--accent-primary);"></i> 24-Hour Hourly Timeline
+      </h2>
+      <div id="hourly-track-container">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+
+    <!-- Section 2: 7-Day Forecast -->
+    <section>
+      <h2 class="metrics-section-title">
+        <i class="fa-solid fa-calendar-week" style="color: var(--accent-primary);"></i> 7-Day Extended Forecast
+      </h2>
+      <div id="daily-list-container" class="daily-forecast-list">
+        <!-- Rendered dynamically via JS -->
+      </div>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="brand-icon">🌦️</span>
+            <span class="brand-text">Weather<span>Sphere</span></span>
+          </div>
+          <p class="footer-tagline">"Weather, wherever you are." Real-time weather intelligence and hyper-local atmospheric forecasts.</p>
+          <div class="footer-provider-badge">
+            <i class="fa-solid fa-shield-halved" style="color: var(--accent-primary);"></i> Powered by OpenWeather API
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Navigation</h4>
+          <ul class="footer-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="forecast.html">Forecast</a></li>
+            <li><a href="cities.html">Cities</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>User Area</h4>
+          <ul class="footer-links">
+            <li><a href="favorites.html">Favorites</a></li>
+            <li><a href="history.html">Search History</a></li>
+            <li><a href="login.html">Sign In</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Information</h4>
+          <ul class="footer-links">
+            <li><a href="about.html">About</a></li>
+            <li><a href="about.html#architecture">Architecture</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 WeatherSphere. All rights reserved.</span>
+        <span>Verified REST Engine • Clean Vanilla Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <script type="module" src="../js/app.js"></script>
+  <script type="module">
+    import { ForecastManager } from '../js/forecast.js';
+    const manager = new ForecastManager();
+    manager.init();
+  </script>
+</body>
+</html>

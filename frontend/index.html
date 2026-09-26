@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WeatherSphere — Weather, Wherever You Are</title>
+  <meta name="description" content="Get accurate real-time weather information, 24-hour hourly outlook, and 7-day forecasts for your current location or any city globally.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌦️</text></svg>">
+  
+  <!-- Font Awesome 6 Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Design System & Styles -->
+  <link rel="stylesheet" href="css/themes.css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+  <!-- Navigation Bar -->
+  <header class="navbar" id="main-navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-brand" aria-label="WeatherSphere Home">
+        <span class="brand-icon">🌦️</span>
+        <span class="brand-text">Weather<span>Sphere</span></span>
+      </a>
+
+      <!-- Desktop & Mobile Navigation Links -->
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links" id="nav-links-menu">
+          <li><a href="index.html" class="nav-link active"><i class="fa-solid fa-house"></i> Home</a></li>
+          <li><a href="pages/forecast.html" class="nav-link"><i class="fa-solid fa-chart-line"></i> Forecast</a></li>
+          <li><a href="pages/cities.html" class="nav-link"><i class="fa-solid fa-city"></i> Cities</a></li>
+          <li><a href="pages/favorites.html" class="nav-link"><i class="fa-solid fa-star"></i> Favorites</a></li>
+          <li><a href="pages/history.html" class="nav-link"><i class="fa-solid fa-clock-rotate-left"></i> History</a></li>
+          <li><a href="pages/about.html" class="nav-link"><i class="fa-solid fa-circle-info"></i> About</a></li>
+        </ul>
+      </nav>
+
+      <!-- Right Controls: Unit, Theme & Auth -->
+      <div class="nav-actions">
+        <!-- °C / °F Unit Pill -->
+        <div class="control-pill" title="Toggle Temperature Unit">
+          <button class="pill-btn unit-btn active" data-unit="C" aria-label="Celsius">°C</button>
+          <button class="pill-btn unit-btn" data-unit="F" aria-label="Fahrenheit">°F</button>
+        </div>
+
+        <!-- Theme Toggle -->
+        <button class="btn-icon-toggle theme-toggle-btn" aria-label="Toggle Dark and Light theme" title="Toggle Theme">
+          <i class="fa-solid fa-sun"></i>
+        </button>
+
+        <!-- Dynamic Auth Button -->
+        <div id="navbar-auth-section">
+          <a href="pages/login.html" class="btn-auth">
+            <i class="fa-solid fa-user"></i>
+            <span>Sign In</span>
+          </a>
+        </div>
+
+        <!-- Mobile Hamburger Button -->
+        <button class="hamburger-btn" aria-label="Toggle navigation menu" id="hamburger-btn">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="container">
+    <!-- Hero Section -->
+    <section class="hero-section" aria-labelledby="hero-title">
+      <div class="hero-badge">
+        <i class="fa-solid fa-satellite-dish"></i> Live Meteorological Intelligence
+      </div>
+      <h1 class="hero-title" id="hero-title">Weather, wherever you are.</h1>
+      <p class="hero-subtitle">Get accurate weather information for your current location or any city around the world.</p>
+
+      <!-- Search Bar -->
+      <div class="search-wrapper">
+        <form class="search-box" id="search-form" role="search">
+          <i class="fa-solid fa-magnifying-glass search-icon" aria-hidden="true"></i>
+          <input 
+            type="text" 
+            id="search-input" 
+            class="search-input" 
+            placeholder="Enter city name (e.g. Jaipur, London, Tokyo, New York)..." 
+            autocomplete="off" 
+            required 
+            aria-label="Search city weather"
+          />
+          <div class="search-actions">
+            <button type="submit" class="btn-search" id="btn-search-submit">
+              <i class="fa-solid fa-magnifying-glass"></i> Search
+            </button>
+            <button type="button" class="btn-location" id="btn-use-location" title="Detect and load weather for your current position">
+              <i class="fa-solid fa-location-crosshairs"></i> Use My Location
+            </button>
+          </div>
+        </form>
+
+        <!-- Quick Trending Cities Chips -->
+        <div class="quick-cities" aria-label="Trending cities">
+          <span class="quick-label">Trending:</span>
+          <button type="button" class="city-chip" data-city="Jaipur">Jaipur</button>
+          <button type="button" class="city-chip" data-city="New Delhi">New Delhi</button>
+          <button type="button" class="city-chip" data-city="Mumbai">Mumbai</button>
+          <button type="button" class="city-chip" data-city="London">London</button>
+          <button type="button" class="city-chip" data-city="New York">New York</button>
+          <button type="button" class="city-chip" data-city="Tokyo">Tokyo</button>
+          <button type="button" class="city-chip" data-city="Dubai">Dubai</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Weather Dashboard Main Section -->
+    <section class="weather-dashboard" aria-label="Weather Dashboard">
+      <div class="dashboard-grid">
+        <!-- Left: Hero Card with Live Weather -->
+        <div id="hero-card-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+
+        <!-- Right: Atmospheric Parameters Grid -->
+        <div>
+          <h2 class="metrics-section-title">
+            <i class="fa-solid fa-chart-simple" style="color: var(--accent-primary);"></i> Atmospheric Conditions
+          </h2>
+          <div id="metrics-container">
+            <!-- Populated dynamically via JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- 24-Hour Hourly Forecast Quick Track -->
+      <section class="forecast-section" aria-labelledby="hourly-heading">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem;">
+          <h2 class="metrics-section-title" id="hourly-heading" style="margin-bottom: 0;">
+            <i class="fa-solid fa-clock" style="color: var(--accent-primary);"></i> Upcoming Hourly Outlook
+          </h2>
+          <a href="pages/forecast.html" style="font-size: 0.9rem; color: var(--accent-primary); font-weight: 600;">
+            View Detailed 7-Day Forecast <i class="fa-solid fa-arrow-right"></i>
+          </a>
+        </div>
+        <div id="hourly-container">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-brand">
+          <div class="nav-brand">
+            <span class="brand-icon">🌦️</span>
+            <span class="brand-text">Weather<span>Sphere</span></span>
+          </div>
+          <p class="footer-tagline">"Weather, wherever you are." Real-time weather intelligence, microclimate insights, and hyper-local atmospheric forecasts.</p>
+          <div class="footer-provider-badge">
+            <i class="fa-solid fa-shield-halved" style="color: var(--accent-primary);"></i> Powered by OpenWeather API
+          </div>
+        </div>
+
+        <div class="footer-column">
+          <h4>Explore</h4>
+          <ul class="footer-links">
+            <li><a href="index.html">Current Weather</a></li>
+            <li><a href="pages/forecast.html">7-Day & Hourly Forecast</a></li>
+            <li><a href="pages/cities.html">Global City Explorer</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>Personal</h4>
+          <ul class="footer-links">
+            <li><a href="pages/favorites.html">Saved Locations</a></li>
+            <li><a href="pages/history.html">Search History</a></li>
+            <li><a href="pages/login.html">Account Sign In</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-column">
+          <h4>About & System</h4>
+          <ul class="footer-links">
+            <li><a href="pages/about.html">About WeatherSphere</a></li>
+            <li><a href="pages/about.html#architecture">System Architecture</a></li>
+            <li><a href="pages/about.html#api">REST API Documentation</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <span>&copy; 2026 WeatherSphere. All rights reserved. Built for professional meteorological precision.</span>
+        <span>Verified REST Engine • Clean Vanilla Architecture</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script type="module" src="js/app.js"></script>
+  <script type="module">
+    import { WeatherDashboard } from './js/weather.js';
+    const dashboard = new WeatherDashboard();
+    dashboard.init();
+  </script>
+</body>
+</html>
