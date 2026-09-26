@@ -4,8 +4,13 @@
  * error handling, and normalized responses.
  */
 
-// Dynamically determine API base URL
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+// Dynamically determine API base URL:
+// If running on local static dev server (e.g. port 5500), point to local backend port 5000.
+// When hosted on Vercel or running unified server, use relative path '/api'.
+const isLocalDedicatedDev = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
+  && (window.location.port === '5500' || window.location.port === '5501' || window.location.port === '8080');
+
+const API_BASE_URL = isLocalDedicatedDev
   ? 'http://localhost:5000/api'
   : '/api';
 

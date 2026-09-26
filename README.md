@@ -203,6 +203,55 @@ The frontend application will be live at: **`http://localhost:5500`**
 
 ---
 
+## 🚀 Deploying to Vercel
+
+WeatherSphere is fully pre-configured for **1-click zero-config deployment on Vercel**! The project runs as a unified deployment with the frontend served at the edge and the Express API running on Vercel Serverless Functions.
+
+### Option A: Deploy via GitHub (Recommended)
+
+1. **Push your code to GitHub:**
+   ```bash
+   git add .
+   git commit -m "Configure full-stack deployment for Vercel"
+   git push origin main
+   ```
+
+2. **Import into Vercel:**
+   - Go to [vercel.com](https://vercel.com) and click **"Add New..." > "Project"**.
+   - Select your **Weather-App** repository.
+   - **Framework Preset:** Leave as *Other* (detected automatically via `vercel.json`).
+   - **Root Directory:** `./` (leave default).
+   - Click **"Deploy"**.
+
+3. **(Optional) Configure Environment Variables in Vercel:**
+   Go to your project dashboard on Vercel: **Settings > Environment Variables**:
+   | Variable | Value | Description |
+   |---|---|---|
+   | `MONGODB_URI` | `mongodb+srv://...` | *(Optional)* MongoDB Atlas connection string. If omitted, resilient storage engine is used automatically. |
+   | `WEATHER_API_KEY` | `your_key` | *(Optional)* OpenWeather API key. If omitted, live satellite meteorological feed is used automatically. |
+   | `JWT_SECRET` | `your_secret` | *(Optional)* Secret key for signing user auth tokens. |
+
+### Option B: Deploy via Vercel CLI
+
+```bash
+# Install Vercel CLI globally (if not already installed)
+npm install -g vercel
+
+# Deploy to preview
+vercel
+
+# Deploy directly to production
+vercel --prod
+```
+
+### Architecture on Vercel:
+- **`frontend/`** is served directly from Vercel's global Edge Network CDN via `outputDirectory: "frontend"`.
+- **`api/index.js`** handles all `/api/*` traffic via Serverless Functions.
+- Zero server timeouts: When `MONGODB_URI` is not set, the app instantly uses the resilient storage engine with no cold start delays.
+- Writable persistence: Resilient storage automatically adapts to `/tmp` in serverless environments, preventing any read-only filesystem errors.
+
+---
+
 ## 📡 REST API Documentation
 
 ### 1. System Health

@@ -55,27 +55,15 @@ userSchema.methods.matchPassword = async function (enteredPassword) {
 
 const MongooseUser = mongoose.model('User', userSchema);
 
-// Resilient File-Store Fallback Handler
-const DATA_FILE = path.join(__dirname, '..', 'data', 'users.json');
-
-function ensureDataFile() {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, JSON.stringify([]));
-}
+// Resilient Storage Fallback Handler (Compatible with Vercel & Local)
+const { readData, writeData } = require('../utils/storageHelper');
 
 function readUsers() {
-  ensureDataFile();
-  try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-  } catch (e) {
-    return [];
-  }
+  return readData('users.json');
 }
 
 function writeUsers(users) {
-  ensureDataFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(users, null, 2));
+  writeData('users.json', users);
 }
 
 // Transparent Proxy Layer

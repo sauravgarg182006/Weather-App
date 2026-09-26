@@ -34,26 +34,15 @@ searchHistorySchema.index({ userId: 1, searchedAt: -1 });
 
 const MongooseSearchHistory = mongoose.model('SearchHistory', searchHistorySchema);
 
-const DATA_FILE = path.join(__dirname, '..', 'data', 'history.json');
-
-function ensureDataFile() {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
-  if (!fs.existsSync(DATA_FILE)) fs.writeFileSync(DATA_FILE, JSON.stringify([]));
-}
+// Resilient Storage Fallback Handler (Compatible with Vercel & Local)
+const { readData, writeData } = require('../utils/storageHelper');
 
 function readHistory() {
-  ensureDataFile();
-  try {
-    return JSON.parse(fs.readFileSync(DATA_FILE, 'utf-8'));
-  } catch (e) {
-    return [];
-  }
+  return readData('history.json');
 }
 
 function writeHistory(items) {
-  ensureDataFile();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(items, null, 2));
+  writeData('history.json', items);
 }
 
 // Deduplicate list helper
