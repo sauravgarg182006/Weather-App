@@ -60,7 +60,13 @@ const addFavorite = async (req, res, next) => {
 // @access  Private
 const removeFavorite = async (req, res, next) => {
   try {
-    const { id } = req.params;
+    const rawId = req.params.id || '';
+    const id = decodeURIComponent(rawId).trim();
+
+    if (!id) {
+      return sendError(res, 'Favorite identifier or city name is required.', 400);
+    }
+
     const userId = req.user._id || req.user.id;
 
     const favorite = await FavoriteModel.findByIdAndDelete(id, userId);

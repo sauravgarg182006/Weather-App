@@ -43,6 +43,10 @@ userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) {
     return next();
   }
+  // Prevent double-hashing if password is already a valid bcrypt hash
+  if (/^\$2[aby]\$\d{2}\$/.test(this.password)) {
+    return next();
+  }
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
   next();
@@ -69,15 +73,21 @@ function writeUsers(users) {
 // Transparent Proxy Layer
 const UserModel = {
   schema: userSchema,
+  MongooseUser,
 
   async findOne(query) {
     if (mongoose.connection.readyState === 1) {
-      return await MongooseUser.findOne(query);
+      const q = { ...query };
+      if (q.email && typeof q.email === 'string') {
+        q.email = q.email.toLowerCase().trim();
+      }
+      return await MongooseUser.findOne(q);
     }
     const users = readUsers();
+    const cleanEmail = query.email ? query.email.toLowerCase().trim() : null;
     const user = users.find(u => {
-      if (query.email && u.email.toLowerCase() === query.email.toLowerCase()) return true;
-      if (query._id && u._id === query._id) return true;
+      if (cleanEmail && u.email.toLowerCase() === cleanEmail) return true;
+      if (query._id && (u._id === query._id || u.id === query._id)) return true;
       return false;
     });
     if (!user) return null;
@@ -89,21 +99,31 @@ const UserModel = {
 
   async findById(id) {
     if (mongoose.connection.readyState === 1) {
+      if (!mongoose.Types.ObjectId.isValid(id)) {
+        return null;
+      }
       return await MongooseUser.findById(id).select('-password');
     }
     const users = readUsers();
-    const user = users.find(u => u._id === id);
+    const user = users.find(u => u._id === id || u.id === id);
     if (!user) return null;
     const { password, ...safeUser } = user;
     return safeUser;
   },
 
   async create({ name, email, password }) {
+    const cleanEmail = (email || '').toLowerCase().trim();
+    const cleanName = (name || '').trim();
+
     if (mongoose.connection.readyState === 1) {
-      return await MongooseUser.create({ name, email, password });
+      return await MongooseUser.create({
+        name: cleanName,
+        email: cleanEmail,
+        password,
+      });
     }
     const users = readUsers();
-    if (users.some(u => u.email.toLowerCase() === email.toLowerCase())) {
+    if (users.some(u => u.email.toLowerCase() === cleanEmail)) {
       const err = new Error('User already exists');
       err.code = 11000;
       throw err;
@@ -112,8 +132,8 @@ const UserModel = {
     const hashedPassword = await bcrypt.hash(password, salt);
     const newUser = {
       _id: 'usr_' + Date.now() + Math.random().toString(36).substr(2, 6),
-      name,
-      email: email.toLowerCase(),
+      name: cleanName,
+      email: cleanEmail,
       password: hashedPassword,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),

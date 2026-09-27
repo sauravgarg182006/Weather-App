@@ -4,15 +4,25 @@
  * and zero-delay local fallback for serverless hosting (Vercel).
  */
 
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '..', '.env') });
+require('dotenv').config();
+
 const mongoose = require('mongoose');
 
 let isMongoConnected = false;
+let cachedPromise = null;
 
 const connectDB = async () => {
   // Reuse existing connection if ready (serverless connection pooling)
   if (mongoose.connection.readyState === 1) {
     isMongoConnected = true;
     return mongoose.connection;
+  }
+
+  // Reuse pending connection promise to prevent duplicate connections
+  if (cachedPromise && mongoose.connection.readyState === 2) {
+    return cachedPromise;
   }
 
   const mongoURI = process.env.MONGODB_URI;
@@ -25,19 +35,20 @@ const connectDB = async () => {
 
   const targetURI = mongoURI || 'mongodb://127.0.0.1:27017/weathersphere';
 
-  try {
-    const conn = await mongoose.connect(targetURI, {
-      serverSelectionTimeoutMS: 2500, // Fast failover if database is unreachable
-    });
-
+  cachedPromise = mongoose.connect(targetURI, {
+    serverSelectionTimeoutMS: 10000, // 10s gives Atlas adequate time for SRV lookup & TLS
+  }).then((conn) => {
     isMongoConnected = true;
-    console.log(`[MongoDB] Connected: ${conn.connection.host}`);
+    console.log(`[MongoDB] Connected: ${conn.connection.host} (DB: ${conn.connection.name})`);
     return conn;
-  } catch (error) {
+  }).catch((error) => {
+    cachedPromise = null;
     isMongoConnected = false;
     console.warn(`[MongoDB] Notice: Running in resilient storage engine mode (${error.message}).`);
     return null;
-  }
+  });
+
+  return cachedPromise;
 };
 
 const getDBStatus = () => ({
@@ -46,6 +57,9 @@ const getDBStatus = () => ({
   host: mongoose.connection.readyState === 1
     ? mongoose.connection.host
     : 'Resilient High-Availability Store',
+  database: mongoose.connection.readyState === 1
+    ? mongoose.connection.name
+    : 'Local Store',
 });
 
 module.exports = { connectDB, getDBStatus };

@@ -4,12 +4,13 @@
  * Vercel-compatible backend
  */
 
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
 require('dotenv').config();
 
 const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
-const path = require('path');
 
 const { connectDB, getDBStatus } = require('./config/db');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');

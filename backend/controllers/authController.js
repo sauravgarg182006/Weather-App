@@ -13,14 +13,25 @@ const registerUser = async (req, res, next) => {
   try {
     const { name, email, password } = req.body;
 
-    const userExists = await UserModel.findOne({ email });
+    if (!name || !name.trim() || !email || !email.trim() || !password) {
+      return sendError(res, 'Please provide name, email, and password.', 400);
+    }
+
+    if (password.length < 6) {
+      return sendError(res, 'Password must be at least 6 characters.', 400);
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+    const cleanName = name.trim();
+
+    const userExists = await UserModel.findOne({ email: cleanEmail });
     if (userExists) {
       return sendError(res, 'An account with this email already exists.', 400);
     }
 
     const user = await UserModel.create({
-      name,
-      email,
+      name: cleanName,
+      email: cleanEmail,
       password,
     });
 
@@ -52,7 +63,13 @@ const loginUser = async (req, res, next) => {
   try {
     const { email, password } = req.body;
 
-    const user = await UserModel.findOne({ email });
+    if (!email || !email.trim() || !password) {
+      return sendError(res, 'Please provide both email and password.', 400);
+    }
+
+    const cleanEmail = email.trim().toLowerCase();
+
+    const user = await UserModel.findOne({ email: cleanEmail });
     if (!user) {
       return sendError(res, 'Invalid email or password.', 401);
     }

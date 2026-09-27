@@ -10,9 +10,9 @@ const path = require('path');
 
 const searchHistorySchema = new mongoose.Schema({
   userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: mongoose.Schema.Types.Mixed,
     required: true,
+    index: true,
   },
   city: {
     type: String,
@@ -61,11 +61,23 @@ function deduplicateList(items) {
 
 const SearchHistoryModel = {
   schema: searchHistorySchema,
+  MongooseSearchHistory,
 
   async find(query) {
     let items = [];
     if (mongoose.connection.readyState === 1) {
-      items = await MongooseSearchHistory.find(query).sort({ searchedAt: -1 }).limit(50);
+      const q = {};
+      if (query.userId) {
+        const orConditions = [
+          { userId: query.userId },
+          { userId: String(query.userId) },
+        ];
+        if (mongoose.Types.ObjectId.isValid(query.userId)) {
+          orConditions.push({ userId: new mongoose.Types.ObjectId(query.userId) });
+        }
+        q.$or = orConditions;
+      }
+      items = await MongooseSearchHistory.find(q).sort({ searchedAt: -1 }).limit(50);
     } else {
       const all = readHistory();
       items = all
@@ -85,10 +97,18 @@ const SearchHistoryModel = {
     if (!city) return null;
 
     if (mongoose.connection.readyState === 1) {
+      const userCondition = [
+        { userId: data.userId },
+        { userId },
+      ];
+      if (mongoose.Types.ObjectId.isValid(data.userId)) {
+        userCondition.push({ userId: new mongoose.Types.ObjectId(data.userId) });
+      }
+
       // Find and remove/update any existing entry for this city to prevent duplicates
       const existing = await MongooseSearchHistory.findOne({
-        userId,
-        city: { $regex: new RegExp(`^${city}$`, 'i') },
+        $or: userCondition,
+        city: { $regex: new RegExp(`^${city.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`, 'i') },
       });
 
       if (existing) {
@@ -99,7 +119,7 @@ const SearchHistoryModel = {
       }
 
       return await MongooseSearchHistory.create({
-        userId,
+        userId: data.userId,
         city,
         country,
         searchedAt: new Date(),
@@ -134,19 +154,56 @@ const SearchHistoryModel = {
 
   async findByIdAndDelete(id, userId) {
     if (mongoose.connection.readyState === 1) {
-      return await MongooseSearchHistory.findOneAndDelete({ _id: id, userId });
+      const userCondition = [];
+      if (userId) {
+        userCondition.push({ userId });
+        userCondition.push({ userId: String(userId) });
+        if (mongoose.Types.ObjectId.isValid(userId)) {
+          userCondition.push({ userId: new mongoose.Types.ObjectId(userId) });
+        }
+      }
+
+      // 1. Try finding and deleting by ObjectId if valid
+      if (mongoose.Types.ObjectId.isValid(id)) {
+        const query = { _id: id };
+        if (userCondition.length) query.$or = userCondition;
+        const res = await MongooseSearchHistory.findOneAndDelete(query);
+        if (res) return res;
+      }
+
+      // 2. Also try finding and deleting by city name
+      if (typeof id === 'string' && id.trim()) {
+        const escaped = id.trim().replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const query = { city: { $regex: new RegExp(`^${escaped}$`, 'i') } };
+        if (userCondition.length) query.$or = userCondition;
+        const res = await MongooseSearchHistory.findOneAndDelete(query);
+        if (res) return res;
+      }
+
+      return null;
     }
     let all = readHistory();
-    const item = all.find(h => (h._id === id || h.id === id) && (!userId || h.userId === String(userId)));
+    const item = all.find(h => (h._id === id || h.id === id || h.city.toLowerCase() === String(id).toLowerCase().trim()) && (!userId || h.userId === String(userId)));
     if (!item) return null;
-    all = all.filter(h => h._id !== id && h.id !== id);
+    all = all.filter(h => h._id !== item._id && h.id !== item.id);
     writeHistory(all);
     return item;
   },
 
   async deleteMany(query) {
     if (mongoose.connection.readyState === 1) {
-      return await MongooseSearchHistory.deleteMany(query);
+      const q = {};
+      if (query.userId) {
+        const userCondition = [
+          { userId: query.userId },
+          { userId: String(query.userId) },
+        ];
+        if (mongoose.Types.ObjectId.isValid(query.userId)) {
+          userCondition.push({ userId: new mongoose.Types.ObjectId(query.userId) });
+        }
+        q.$or = userCondition;
+      }
+      return await MongooseSearchHistory.deleteMany(q);
     }
     let all = readHistory();
     all = all.filter(h => h.userId !== String(query.userId));
